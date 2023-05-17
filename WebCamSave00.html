@@ -1,0 +1,145 @@
+<html>
+<meta name="viewport" content="width=device-width,initial-scale=0.7,maximum-scale=0.7,user-scalable=no">
+<head>
+<style>
+input {font-size:20px}
+</style>
+<script>
+mkOffset=0.51;
+cR=0.22; cG=0.5; cB=0.28;
+//cR=0.30; cG=0.59; cB=0.11;
+//cR=1; cG=1; cB=1;
+cMax=255*(cR+cG+cB);
+photo=false;
+height=0; width=0;
+window.onorientationchange=(
+  function(event){
+    Run();
+})// 
+
+function Run(){
+  //Camera
+  navigator.mediaDevices
+   .getUserMedia({audio:false,
+      video:{facingMode:"environment",
+         zoom:200}})
+   .then(async function(stream){
+      cam.srcObject=stream; 
+      await cam.play();
+      height=cam.videoHeight; 
+      width=cam.videoWidth;
+      //alert(width+"*"+height);
+      pic.height=height; pic.width=width;
+      ph=pic.getContext('2d');
+      mark.height=height; mark.width=width;
+      mk=mark.getContext('2d');
+      Mark();
+      graph.height=height; graph.width=width;
+      gr=graph.getContext('2d');      
+   })
+   .catch(function(e){alert(e.name)})
+ //Canvas
+}//Run
+function Mark(){
+  mk.fillStyle="#ffffff"
+  mk.fillRect(width*mkOffset,0,1,height);
+  mk.fillStyle="#000000"
+  mk.fillRect(width*mkOffset+1,0,1,height);
+}//Mark
+function Photo(){
+  ph.drawImage(cam,0,0,width,height);
+  dCam.style.visibility="hidden";
+  dPic.style.visibility="visible";
+  dGr.style.visibility="visible";
+  btn.value="Run  Video";
+  sBtn.style.visibility="visible";
+  photo=true;
+  Graph();
+}//Photo
+function Graph(){
+  row=ph.getImageData(width*mkOffset,0,1,height);
+  amp=[height];
+  for(i=0; i<height;i++){ p=i*4;   
+    amp[i]=(row.data[p+0]*cR)**2+
+           (row.data[p+1]*cG)**2+
+           (row.data[p+2]*cB)**2;
+    amp[i]=amp[i]**0.5/cMax;
+  }//for i
+  gr.clearRect(0,0,width,height);
+  gr.beginPath();
+  for(i=0; i<height;i++){
+    gr.lineTo(width*(1-amp[i])+2,i-2);
+  }//for i
+  gr.strokeStyle="#000000";
+  gr.lineWidth=2;
+  gr.stroke();
+  gr.beginPath();
+  for(i=0; i<height;i++){
+    gr.lineTo(width*(1-amp[i]),i);
+  }//for i
+  gr.strokeStyle="#ffffff";
+  gr.lineWidth=2;
+  gr.stroke();
+  color=["#ff0000","#00ff00","#0000ff"]; 
+  for (c=0; c<3; c++){
+    gr.beginPath();
+    for(i=0; i<height;i++){ p=i*4;   
+      gr.lineTo(width*(1-row.data[p+c]/255),i);
+    }//for i
+    gr.strokeStyle=color[c];
+    gr.lineWidth=2;
+    gr.stroke();
+  }//for c 
+}//Graph
+function Select(){
+  //alert(window.orientation);
+  if (!photo){
+    Photo();
+  }else{
+    dCam.style.visibility="visible";
+    dPic.style.visibility="hidden";
+    dGr.style.visibility="hidden";
+    btn.value="Take Photo";
+    sBtn.style.visibility="hidden";
+    photo=false;
+  }
+}//Select
+function Save(){
+  data="#\t R \t G \t B \r\n";
+  for(i=0; i<height;i++){ p=i*4;   
+    data+=i+"\t"+
+          row.data[p+0]+"\t"+
+          row.data[p+1]+"\t"+
+          row.data[p+2]+"\r\n";
+  }//for i
+  //alert(data); 
+  tBlob=new Blob([data],{type:'text/plain'});
+  aLink=document.createElement('a');
+  aLink.download='RGB.txt';
+  aLink.href=window.URL.createObjectURL(tBlob);
+  document.body.appendChild(aLink);
+  aLink.click();  
+}//Save
+</script>
+</head>
+<body onLoad=Run()>
+<div id=dCam style="z-index:0; position:absolute;left:1px;top:1px;visibility:visible">
+  <video id=cam></video>
+</div>
+<div id=dPic style="z-index:1; position:absolute;left:1px;top:1px;visibility:hidden">
+ <canvas id=pic></canvas>
+</div>
+<div style="z-index:2; position:absolute;left:1px;top:1px">
+ <canvas id=mark></canvas>
+</div>
+<div id=dGr style="z-index:3; position:absolute;left:1px;top:1px;visibility:hidden">
+ <canvas id=graph></canvas>
+</div>
+<div style="z-index:4; position:absolute;left:5px;top:5px">
+  <input id=btn type=button value="Take Photo" onClick=Select()>
+</div>
+<div style="z-index:4; position:absolute;left:5px;bottom:5px;visibility:hidden">
+  <input id=sBtn type=button value="Save" onClick=Save()>
+</div>
+</body>
+</html>
