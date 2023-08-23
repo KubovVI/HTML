@@ -1,0 +1,42 @@
+<html>
+<head>
+  <script src="script.js"></script>
+</head>
+<body onLoad=init()>
+Radar 24GHz HLK-LD2410. Hex Output
+<br><textarea id=_term_window rows=25 cols=135 style="font-size:16px"></textarea>
+<br><button id=_openclose_port onClick=openClose()>Open</button>&nbsp;  
+Baud Rate:
+<select id=_baud_rate>
+  <option value=9600>9600</option>
+  <option value=19200>19200</option>
+  <option value=38400>38400</option>
+  <option value=57600>57600</option>
+  <option value=115200>115200</option>
+  <option value=256000 selected>256000</option>
+</select>        
+Status:
+<textarea id=_port_info rows=1 cols=30>Select device by Open Button</textarea>
+&nbsp;&nbsp;
+<button id=_clear onClick=clearTerminal()>Clear</button>
+&nbsp;&nbsp; Command: &nbsp;&nbsp;
+<select id=_command>
+  <option value="none"></option>
+  <option value=0>Enable Configuration</option>
+  <option value=1>End Configuration</option>
+  <option value=2>set Engineering Mode</option>
+  <option value=3>close Engineering Mode</option>
+  <option value=4>get Version</option>
+  <option value=5>set 256000bouds</option>
+  <option value=6>set 115200bouds</option>
+  <option value=7>Reset</option>
+  <option value=8>Bluetooth On</option>
+  <option value=9>Bluetooth Off</option>
+  <option value=10>get MAC</option>
+</select> 
+<button id=_send onClick=sendCommand()>Send</button>
+<br><br><u>To Send Command</u>: <b>1</b>. Send "Enable Configuration". 
+<b>2</b>. Select & Send Command. <b>3</b>. Send "End Configuration".         
+<br><sp>*</sp> Bouds and Bluetooth changes, and Reset are activeted after Power Off/On
+</body>
+</html>
