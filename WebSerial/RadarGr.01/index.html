@@ -1,0 +1,64 @@
+<html>
+<head>
+  <script src="script.js"></script>
+</head>
+<body onLoad=init()>
+Radar 24GHz HLK-LD2410. Hex Output in Terminal mode, or Amplitude by Distance in Graph mode.
+<br><textarea id=_term_window rows=25 cols=135 style="font-size:16px"></textarea>
+<br><button id=_openclose_port onClick=openClose()>Open</button>&nbsp;  
+Baud Rate:
+<select id=_baud_rate>
+  <option value=9600>9600</option>
+  <option value=19200>19200</option>
+  <option value=38400>38400</option>
+  <option value=57600>57600</option>
+  <option value=115200>115200</option>
+  <option value=256000 selected>256000</option>
+</select>
+&nbsp;         
+Status:
+<textarea id=_port_info rows=1 cols=26>Select device by Open Button</textarea>
+<tt id=_dataQ>&emsp;</tt>
+&nbsp;&nbsp; 
+<button id=_clear onClick=clearTerminal()>Clear</button>
+&nbsp;&nbsp; 
+<button id=_save onClick=saveFile()>Save</button>
+&nbsp;&nbsp;  
+Command: 
+<select id=_command>
+  <option value="none"></option>
+  <option value=0>Enable Configuration</option>
+  <option value=1>End Configuration</option>
+  <option value=2>set Engineering Mode</option>
+  <option value=3>close Engineering Mode</option>
+  <option value=4>get Version</option>
+  <option value=5>set 256000baud</option>
+  <option value=6>set 115200baud</option>
+  <option value=7>Reset</option>
+  <option value=8>Bluetooth On</option>
+  <option value=9>Bluetooth Off</option>
+  <option value=10>get MAC</option>
+  <option value=11>Restart</option>
+  <option value=12>read Parameters</option>
+  <option value=13>get Resolutions</option>
+  <option value=14>set Lo Resolutions</option>
+  <option value=15>set Hi Resolutions</option>
+</select> 
+<button id=_send onClick=sendCommand()>Send</button>
+&nbsp;&nbsp;  
+<button id=_grOnOff onClick=grOnOff()>Graph</button>
+
+<br><br><u>To Send Command</u>: <b>1</b>. Send "Enable Configuration". 
+<b>2</b>. Select & Send Command. <b>3</b>. Send "End Configuration".         
+<br><sp>*</sp> Bouds and Bluetooth changes, and Reset are activeted after Power Off/On
+<br><sp>**</sp> Set Engineering Mode for Graph
+
+<div id=_grW style="position:absolute; left:10; top:32; visibility:hidden">
+<canvas id=_pic height=478 width=1220></canvas>
+<div style="position:absolute; left:1100; top:0">
+<b><font color=#ff0000>Static</font><br><font color=#0000ff>Dynamic</font></b> 
+</div> 
+</div>
+
+</body>
+</html>
